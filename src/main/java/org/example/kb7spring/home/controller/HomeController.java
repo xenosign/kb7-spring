@@ -1,13 +1,15 @@
-package org.example.kb7spring.controller;
+package org.example.kb7spring.home.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Slf4j
+@RequestMapping("/api/home")
 public class HomeController {
-    @GetMapping("/")
+    @GetMapping("")
     public String home() {
         log.info("====================> HomeController /");
         return "index";
