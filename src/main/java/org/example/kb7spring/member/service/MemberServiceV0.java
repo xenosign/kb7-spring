@@ -9,22 +9,22 @@ import java.util.List;
 
 public class MemberServiceV0 {
     private static MemberServiceV0 instance;
-    private final MemberRepositoryV0 memberRepository;
+    private final MemberRepositoryV0 memberRepository = new MemberRepositoryV0();
 
-    public MemberServiceV0() {
-        this.memberRepository = MemberRepositoryV0.getInstance();
-    }
-
-    public static MemberServiceV0 getInstance() {
-        if (instance == null) {
-            instance = new MemberServiceV0();
-        }
-
-        return instance;
-    }
+//    public MemberServiceV0() {
+//        this.memberRepository = MemberRepositoryV0.getInstance();
+//    }
+//
+//    public static MemberServiceV0 getInstance() {
+//        if (instance == null) {
+//            instance = new MemberServiceV0();
+//        }
+//
+//        return instance;
+//    }
 
     public List<MemberDto> getMemberList() {
-        List<Member> entityList = memberRepository.getMemberList();
+        List<Member> entityList = memberRepository.findAll();
         List<MemberDto> dtoList = new ArrayList<>();
 
         for (Member entity : entityList) {
