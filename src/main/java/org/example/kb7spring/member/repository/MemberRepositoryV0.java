@@ -1,6 +1,6 @@
 package org.example.kb7spring.member.repository;
 
-import org.example.kb7spring.member.domain.MemberEntity;
+import org.example.kb7spring.member.domain.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +17,12 @@ public class MemberRepositoryV0 {
         return instance;
     }
 
-    public List<MemberEntity> getMemberList() {
-        List<MemberEntity> memberList = new ArrayList<>();
+    public List<Member> getMemberList() {
+        List<Member> memberList = new ArrayList<>();
 
-        memberList.add(new MemberEntity(1L, "ronaldo@example.com", "호날두", "플래티넘", 300000000L));
-        memberList.add(new MemberEntity(2L, "sjk@example.com", "송중기", "골드", 3000000L));
-        memberList.add(new MemberEntity(3L, "xenosign@example.com", "이효석", "아이언", 10L));
+        memberList.add(new Member(1L, "ronaldo@example.com", "1985. 02. 05","호날두", "플래티넘", 300000000L));
+        memberList.add(new Member(2L, "sjk@example.com", "1985. 09. 19", "송중기", "골드", 3000000L));
+        memberList.add(new Member(3L, "xenosign@example.com", "1985. 11. 18", "이효석", "아이언", 10L));
 
         return memberList;
     }

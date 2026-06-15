@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberEntity {
+public class Member {
     private Long id;
     private String email;
+    private String birth;
     private String name;
     private String grade;
     private Long asset;

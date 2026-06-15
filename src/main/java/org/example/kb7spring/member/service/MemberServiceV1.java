@@ -1,6 +1,6 @@
 package org.example.kb7spring.member.service;
 
-import org.example.kb7spring.member.domain.MemberEntity;
+import org.example.kb7spring.member.domain.Member;
 import org.example.kb7spring.member.dto.MemberDto;
 import org.example.kb7spring.member.repository.MemberRepositoryV1;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ public class MemberServiceV1 {
     }
 
     public List<MemberDto> getMemberList() {
-        List<MemberEntity> entityList = memberRepository.findAll();
+        List<Member> entityList = memberRepository.findAll();
         List<MemberDto> dtoList = new ArrayList<>();
 
-        for (MemberEntity entity : entityList) {
+        for (Member entity : entityList) {
             MemberDto dto = new MemberDto();
             dto.setName(entity.getName());
             dto.setEmail(entity.getEmail());
@@ -33,7 +33,7 @@ public class MemberServiceV1 {
     }
 
     public void addMember(String name, String email) {
-        MemberEntity newMember = new MemberEntity();
+        Member newMember = new Member();
 
         newMember.setName(name);
         newMember.setEmail(email);
