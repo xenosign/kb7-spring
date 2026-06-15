@@ -2,9 +2,9 @@
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <html>
 <head>
-    <title>Spring</title>
+    <title>Member</title>
 </head>
 <body>
-  <h1>Hello, Spring World!!</h1>
+  <h1>Hello, Member Page!</h1>
 </body>
 </html>

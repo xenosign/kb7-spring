@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/member")
-public class MemberController {
+@RequestMapping("/member")
+public class MemberControllerV0 {
     @GetMapping("")
     public String home() {
         log.info("====================> MemberController /");
-        return "index";
+        return "/member/index";
     }
 }
