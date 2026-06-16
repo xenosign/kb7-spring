@@ -1,25 +1,24 @@
 package org.example.kb7spring.member.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.kb7spring.member.dto.MemberDto;
 import org.example.kb7spring.member.service.MemberServiceV0;
+import org.example.kb7spring.member.service.MemberServiceV1;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
 @Slf4j
-@RequestMapping("/member/v0")
-public class MemberControllerV0 {
-    // MemberServiceV0 클래스의 static 메서드인 getInstance() 를 사용하여 싱글톤 인스턴스를 가져와서 사용
-    private final MemberServiceV0 memberService = MemberServiceV0.getInstance();
+@RequiredArgsConstructor
+@RequestMapping("/member/v1")
+public class MemberControllerV1 {
+    private final MemberServiceV1 memberService;
 
     @GetMapping("")
     public String home() {
-        log.info("====================> MemberController V0 /");
+        log.info("====================> MemberController V1 /");
         return "/member/index";
     }
 

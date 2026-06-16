@@ -5,18 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberRepositoryV0 {
-//    private static MemberRepositoryV0 instance;
-//
-//    private MemberRepositoryV0() {}
-//
-//    public static MemberRepositoryV0 getInstance() {
-//        if (instance == null) {
-//            instance = new MemberRepositoryV0();
-//        }
-//
-//        return instance;
-//    }
-
     public List<Member> findAll() {
         List<Member> memberList = new ArrayList<>();
 
@@ -27,3 +15,5 @@ public class MemberRepositoryV0 {
         return memberList;
     }
 }
+
+
