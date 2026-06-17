@@ -3,6 +3,7 @@ package org.example.kb7spring.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ class RootConfigTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
+    @DisplayName("DataSource연결이된다.")
     void sqlSessionFactory() {
         try (SqlSession session = sqlSessionFactory.openSession();
              Connection con = session.getConnection()) {
