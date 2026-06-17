@@ -44,6 +44,7 @@ public class RootConfig {
         @Autowired
         ApplicationContext applicationContext;
 
+        // MyBatis 가 DB 와 통신하기 위한 SqlSessionFactory 인스턴스를 생성하기 위한 Bean
         @Bean
         public SqlSessionFactory sqlSessionFactory() throws Exception {
                 SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
@@ -53,6 +54,8 @@ public class RootConfig {
                 return (SqlSessionFactory) sqlSessionFactory.getObject();
         }
 
+        // 위에서 설정한 DataSource 를 받아서 트랜잭션을 관리하는 매니저를 등록하는 Bean
+        // 이 매니저 등록이 없으면 스프링 내부에서 @Transactional 어노테이션 사용 불가
         @Bean
         public DataSourceTransactionManager transactionManager(){
                 DataSourceTransactionManager manager = new DataSourceTransactionManager(dataSource());
