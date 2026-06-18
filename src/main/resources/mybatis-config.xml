@@ -4,6 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
     <typeAliases>
         <typeAlias alias="Member" type="org.example.kb7spring.member.domain.Member" />
         <typeAlias alias="Student" type="org.example.kb7spring.student.domain.Student" />
