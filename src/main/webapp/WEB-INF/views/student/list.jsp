@@ -9,8 +9,9 @@
 <h1>Student List</h1>
 
 <ul>
+    <li>이름 / 역할 / 특기 / 상태</li>
     <c:forEach var="student" items="${studentList}">
-        <li>${student.name} / ${student.specialty} / ${student.status} / ${student.role} </li>
+        <li>${student.name}  / ${student.role} / ${student.specialty} / ${student.status} </li>
     </c:forEach>
 </ul>
 </body>
