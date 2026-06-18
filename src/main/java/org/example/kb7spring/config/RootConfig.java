@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource({"classpath:/application.properties"})
-@MapperScan(basePackages = {"org.example.kb7spring.member.mapper"})
+@MapperScan(basePackages = {"org.example.kb7spring.member.mapper", "org.example.kb7spring.student.mapper"})
 @ComponentScan(basePackages = {"org.example.kb7spring"},
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ANNOTATION,

@@ -2,6 +2,7 @@ package org.example.kb7spring.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.kb7spring.member.service.MemberService;
 import org.example.kb7spring.member.service.MemberServiceV1;
 import org.example.kb7spring.member.service.MemberServiceV2;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/member/v2")
 public class MemberControllerV2 {
-    private final MemberServiceV2 memberService;
+    private final MemberService memberService;
 
     @GetMapping("")
     public String home() {

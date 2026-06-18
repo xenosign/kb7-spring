@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class MemberRepositoryV1 {
+public class MemberRepositoryV1 implements MemberRepository {
     private final List<Member> memberList = new ArrayList<>();
 
     public MemberRepositoryV1() {
