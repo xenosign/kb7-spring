@@ -14,4 +14,6 @@
   <h3>교육생 - MyBatis</h3>
   <a href="/student/v1">교육생 홈</a>
   <a href="/student/v1/list">교육생 목록</a>
+  <a href="/student/v1/add">교육생 추가</a>
+  <a href="/student/v1/search">교육생 검색</a>
 </div>

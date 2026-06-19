@@ -1,16 +1,11 @@
 package org.example.kb7spring.student.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class StudentDto {
-    private Long id;
+public class StudentSearchDto {
     private String name;
     private String role;
-    private String specialty;
-    private String status;
 }

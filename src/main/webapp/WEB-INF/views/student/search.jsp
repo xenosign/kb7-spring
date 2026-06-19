@@ -7,6 +7,18 @@
 </head>
 <body>
 <h1>Student List</h1>
+
+<form action="/student/v1/search" method="get">
+    이름 검색 : <input type="text" name="name" value="${searchName}" />
+    역할 :
+    <select name="role">
+        <option value="">전체</option>
+        <option value="강사">강사</option>
+        <option value="교육생">교육생</option>
+    </select>
+    <button type="submit">검색</button>
+</form>
+<br />
 <ul>
     <li>이름 / 역할 / 특기 / 상태</li>
     <c:forEach var="student" items="${studentList}">

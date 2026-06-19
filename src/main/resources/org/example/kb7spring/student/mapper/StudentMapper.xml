@@ -7,4 +7,35 @@
     <select id="findAll" resultType="Student">
         SELECT * FROM `student`;
     </select>
+
+    <select id="search" resultType="Student">
+        SELECT * FROM `student`
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="role != null and role != ''">
+                AND role = #{role}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" parameterType="long" resultType="Student">
+        SELECT * FROM `student` WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student (name, role, specialty, status)
+        VALUES (#{name}, #{role}, #{specialty}, #{status})
+    </insert>
+
+    <update id="update" parameterType="Student">
+        UPDATE student
+        SET name = #{name}, role = #{role}, specialty = #{specialty}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM student WHERE id = #{id}
+    </delete>
 </mapper>
