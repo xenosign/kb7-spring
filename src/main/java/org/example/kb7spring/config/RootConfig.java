@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @PropertySource({"classpath:/application.properties"})
@@ -25,6 +27,7 @@ import javax.sql.DataSource;
         )
 )
 public class RootConfig {
+
     @Value("${jdbc.driver}") String driver;
     @Value("${jdbc.url}") String url;
     @Value("${jdbc.username}") String username;
@@ -33,10 +36,10 @@ public class RootConfig {
         @Bean
         public DataSource dataSource() {
                 HikariConfig config = new HikariConfig();
-                config.setDriverClassName(driver);
-                config.setJdbcUrl(url);
-                config.setUsername(username);
-                config.setPassword(password);
+                config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+                config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/kb7spring");
+                config.setUsername("root");
+                config.setPassword("1234");
                 HikariDataSource dataSource = new HikariDataSource(config);
                 return dataSource;
         }
@@ -54,12 +57,30 @@ public class RootConfig {
                 return (SqlSessionFactory) sqlSessionFactory.getObject();
         }
 
-        // 위에서 설정한 DataSource 를 받아서 트랜잭션을 관리하는 매니저를 등록하는 Bean
-        // 이 매니저 등록이 없으면 스프링 내부에서 @Transactional 어노테이션 사용 불가
+        // JPA EntityManagerFactory
         @Bean
-        public DataSourceTransactionManager transactionManager(){
-                DataSourceTransactionManager manager = new DataSourceTransactionManager(dataSource());
-                return manager;
+        public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+                LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+                emf.setDataSource(dataSource());
+                emf.setPackagesToScan("org.example.kb7spring");
+
+                HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+                adapter.setShowSql(true);
+                emf.setJpaVendorAdapter(adapter);
+
+                Properties props = new Properties();
+                props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+                props.setProperty("hibernate.hbm2ddl.auto", "update");
+                props.setProperty("hibernate.format_sql", "true");
+                emf.setJpaProperties(props);
+
+                return emf;
+        }
+
+        // JPA 트랜잭션 매니저 (MyBatis 의 DataSourceTransactionManager 를 대체)
+        @Bean
+        public JpaTransactionManager transactionManager() {
+                return new JpaTransactionManager(entityManagerFactory().getObject());
         }
 
 }

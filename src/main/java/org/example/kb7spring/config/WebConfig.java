@@ -12,15 +12,6 @@ import javax.servlet.ServletRegistration;
 
 @Configuration
 public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
-    @Value("${file.upload.location}")
-    private String location;
-    @Value("${file.upload.max-file-size}")
-    private long maxFileSize;
-    @Value("${file.upload.max-request-size}")
-    private long maxRequestSize;
-    @Value("${file.upload.file-size-threshold}")
-    private int fileSizeThreshold;
-
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{
@@ -48,17 +39,5 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         return new Filter[]{characterEncodingFilter};
-    }
-
-    // ✅ 파일 업로드 설정
-    @Override
-    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-        MultipartConfigElement multipartConfig = new MultipartConfigElement(
-                location,
-                maxFileSize,
-                maxRequestSize,
-                fileSizeThreshold
-        );
-        registration.setMultipartConfig(multipartConfig);
     }
 }
