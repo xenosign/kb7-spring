@@ -7,9 +7,6 @@ import java.util.List;
 
 public interface StudentRepository {
     List<Student> findAll();
-    List<Student> search(StudentSearchDto searchDto);
-    Student findById(Long id);
     void save(Student student);
-    void update(Student student);
-    void delete(Long id);
+    List<Student> search(StudentSearchDto studentSearchDto);
 }

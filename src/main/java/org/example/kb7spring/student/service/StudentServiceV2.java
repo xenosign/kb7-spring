@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class StudentServiceV1 implements StudentService {
+public class StudentServiceV2 implements StudentService {
     private final StudentRepository studentRepository;
 
     public List<StudentDto> getStudentList() {

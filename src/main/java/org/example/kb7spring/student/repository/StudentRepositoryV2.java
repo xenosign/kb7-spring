@@ -7,14 +7,12 @@ import org.example.kb7spring.student.dto.StudentSearchDto;
 import org.example.kb7spring.student.mapper.StudentMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class StudentRepositoryV1 implements StudentRepository {
+public class StudentRepositoryV2 implements JpaRe  {
     private final StudentMapper studentMapper;
 
     public List<Student> findAll() {
