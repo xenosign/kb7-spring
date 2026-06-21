@@ -14,7 +14,7 @@ import java.util.List;
 @Primary
 @Slf4j
 @Repository
-public class StudentRepositoryJpaV1 implements StudentRepository {
+public class StudentRepositoryJpa implements StudentRepository {
     @PersistenceContext
     private EntityManager em;
 

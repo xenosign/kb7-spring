@@ -65,6 +65,7 @@ dependencies {
     implementation "org.springframework:spring-orm:${springVersion}"
     implementation 'org.hibernate:hibernate-core:5.6.15.Final'
     implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.springframework.data:spring-data-jpa:2.7.18'
 }
 
 test {

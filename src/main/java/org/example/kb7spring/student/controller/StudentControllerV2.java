@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.kb7spring.student.dto.StudentDto;
 import org.example.kb7spring.student.dto.StudentSearchDto;
 import org.example.kb7spring.student.service.StudentService;
+import org.example.kb7spring.student.service.StudentServiceV2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,19 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/student/v1")
+@RequestMapping("/student/v2")
 public class StudentControllerV2 {
-    private final StudentService studentService;
+    private final StudentServiceV2 studentService;
 
     @GetMapping("")
     public String home() {
-        log.info("====================> StudentController /");
+        log.info("====================> StudentControllerV2 /");
         return "/student/index";
     }
 
     @GetMapping("/list")
     public String list(Model model) {
-        log.info("====================> StudentController /list");
+        log.info("====================> StudentControllerV2 /list");
 
         model.addAttribute("studentList", studentService.getStudentList());
         return "/student/list";
@@ -33,7 +34,7 @@ public class StudentControllerV2 {
     @GetMapping("/search")
     public String search(@ModelAttribute StudentSearchDto searchDto,
                        Model model) {
-        log.info("====================> StudentController /list : searchDto", searchDto);
+        log.info("====================> StudentControllerV2 /list : {}", searchDto);
 
         model.addAttribute("studentList", studentService.searchStudentList(searchDto));
         return "/student/search";
