@@ -15,6 +15,11 @@ import java.util.List;
 
 @Repository
 public interface StudentRepositoryV2 extends JpaRepository<Student, Long> {
+    @Override
+    List<Student> findAll();
+    @Override
+    <S extends Student> S save(S entity);
+
     List<Student> findByNameOrRole(String name, String role);
 
     @Query("SELECT s FROM Student s " +

@@ -43,7 +43,7 @@ public class StudentControllerV2 {
     @GetMapping("/add")
     public String addForm() {
         log.info("====================> StudentController GET /add");
-        return "/student/add";
+        return "/student/add-jpa";
     }
 
     @PostMapping("/add")
@@ -58,6 +58,6 @@ public class StudentControllerV2 {
         studentDto.setSpecialty(specialty);
         studentDto.setStatus(status);
         studentService.addStudent(studentDto);
-        return "redirect:/student/v1/list";
+        return "redirect:/student/v2/list";
     }
 }

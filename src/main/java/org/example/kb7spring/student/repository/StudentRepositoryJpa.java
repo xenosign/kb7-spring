@@ -11,7 +11,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Primary
 @Slf4j
 @Repository
 public class StudentRepositoryJpa implements StudentRepository {
@@ -32,14 +31,12 @@ public class StudentRepositoryJpa implements StudentRepository {
     @Override
     public List<Student> search(StudentSearchDto searchDto) {
         StringBuilder jpql = new StringBuilder("SELECT s FROM Student s WHERE 1=1");
-
         if (searchDto.getName() != null && !searchDto.getName().isEmpty()) {
             jpql.append(" AND s.name LIKE :name");
         }
         if (searchDto.getRole() != null && !searchDto.getRole().isEmpty()) {
             jpql.append(" AND s.role = :role");
         }
-
         TypedQuery<Student> query = em.createQuery(jpql.toString(), Student.class);
 
         if (searchDto.getName() != null && !searchDto.getName().isEmpty()) {

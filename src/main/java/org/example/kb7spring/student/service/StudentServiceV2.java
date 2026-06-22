@@ -35,6 +35,15 @@ public class StudentServiceV2 {
         return dtoList;
     }
 
+    public void addStudent(StudentDto studentDto) {
+        Student student = new Student();
+        student.setName(studentDto.getName());
+        student.setRole(studentDto.getRole());
+        student.setSpecialty(studentDto.getSpecialty());
+        student.setStatus(studentDto.getStatus());
+        studentRepository.save(student);
+    }
+
     public List<StudentDto> searchStudentList(StudentSearchDto searchDto) {
         List<Student> entityList = studentRepository.findByNameOrRole(searchDto.getName(), searchDto.getRole());
         List<StudentDto> dtoList = new ArrayList<>();
@@ -50,14 +59,5 @@ public class StudentServiceV2 {
         }
 
         return dtoList;
-    }
-
-    public void addStudent(StudentDto studentDto) {
-        Student student = new Student();
-        student.setName(studentDto.getName());
-        student.setRole(studentDto.getRole());
-        student.setSpecialty(studentDto.getSpecialty());
-        student.setStatus(studentDto.getStatus());
-        studentRepository.save(student);
     }
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
     private String role;
     private String specialty;
