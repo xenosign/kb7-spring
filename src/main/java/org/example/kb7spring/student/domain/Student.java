@@ -21,4 +21,8 @@ public class Student {
     private String role;
     private String specialty;
     private String status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "classroom_id")
+    private Classroom classroom;
 }

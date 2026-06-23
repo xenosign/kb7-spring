@@ -26,4 +26,9 @@ public interface StudentRepositoryV2 extends JpaRepository<Student, Long> {
             "WHERE (:name IS NULL OR s.name = :name) " +
             "AND (:role IS NULL OR s.role = :role)")
     List<Student> search(@Param("name") String name, @Param("role") String role);
+
+    @Query("select s " +
+        "from Student s " +
+        "join fetch s.classroom")
+    List<Student> findAllFetchJoin();
 }
