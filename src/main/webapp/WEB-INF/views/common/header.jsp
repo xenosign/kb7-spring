@@ -22,4 +22,7 @@
   <a href="/student/v2/list">교육생 목록</a>
   <a href="/student/v2/add">교육생 추가</a>
   <a href="/student/v2/search">교육생 검색</a>
+
+  <h3>교육생 - REST</h3>
+  <a href="/api/student/v1/list">교육생 목록</a>
 </div>
