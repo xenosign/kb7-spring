@@ -16,13 +16,14 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource({"classpath:/application.properties"})
 @MapperScan(basePackages = {"org.example.kb7spring.member.mapper", "org.example.kb7spring.student.mapper"})
-@ComponentScan(basePackages = {"org.example.kb7spring"},
+@ComponentScan(basePackages = {"org.example.kb7spring", "org.example.kb7spring.sample.service"},
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ANNOTATION,
                 classes = Controller.class
         )
 )
 @Import(JpaConfig.class)
+@EnableAspectJAutoProxy
 public class RootConfig {
     @Value("${jdbc.driver}") String driver;
     @Value("${jdbc.url}") String url;

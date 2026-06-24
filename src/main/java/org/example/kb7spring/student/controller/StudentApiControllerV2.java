@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("/api/student/v2")
 public class StudentApiControllerV2 {
@@ -34,8 +35,8 @@ public class StudentApiControllerV2 {
     }
 
 
-    @GetMapping("/search")
-    public List<StudentDto> search(@ModelAttribute StudentSearchDto searchDto,
+    @PostMapping("/search")
+    public List<StudentDto> search(@RequestBody StudentSearchDto searchDto,
                          Model model) {
         log.info("====================> StudentApiControllerV1 /search, {}", searchDto);
 
@@ -54,21 +55,21 @@ public class StudentApiControllerV2 {
     }
 
 
-    @PostMapping("/add")
-    public void add(@RequestParam String name,
-                      @RequestParam String role,
-                      @RequestParam(required = false) String specialty,
-                      @RequestParam(required = false) String status) {
-        log.info("====================> StudentController POST /add : name={}, role={}", name, role);
-        StudentDto studentDto = new StudentDto();
-        studentDto.setName(name);
-        studentDto.setRole(role);
-        studentDto.setSpecialty(specialty);
-        studentDto.setStatus(status);
-        studentService.addStudent(studentDto);
-    }
+//    @PostMapping("/add")
+//    public void add(@RequestParam String name,
+//                      @RequestParam String role,
+//                      @RequestParam(required = false) String specialty,
+//                      @RequestParam(required = false) String status) {
+//        log.info("====================> StudentController POST /add : name={}, role={}", name, role);
+//        StudentDto studentDto = new StudentDto();
+//        studentDto.setName(name);
+//        studentDto.setRole(role);
+//        studentDto.setSpecialty(specialty);
+//        studentDto.setStatus(status);
+//        studentService.addStudent(studentDto);
+//    }
 
-    @PostMapping("/add2")
+    @PostMapping("/add")
     public void add2(@RequestBody StudentDto studentDto) {
         studentService.addStudent(studentDto);
     }
