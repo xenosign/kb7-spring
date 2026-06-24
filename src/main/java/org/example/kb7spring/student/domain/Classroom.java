@@ -1,5 +1,6 @@
 package org.example.kb7spring.student.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Classroom {
     @Column(name = "room_name", nullable = false)
     private String roomName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "classroom")
     private List<Student> students = new ArrayList<>();
 }

@@ -38,7 +38,7 @@
 
     <!-- Hibernate SQL Logger -->
     <logger name="org.hibernate.SQL">
-        <level value="DEBUG" />
+        <level value="WARN" />
         <appender-ref ref="console" />
     </logger>
 
