@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/api/student/v2")
 public class StudentApiControllerV2 {
@@ -70,7 +70,7 @@ public class StudentApiControllerV2 {
 //    }
 
     @PostMapping("/add")
-    public void add2(@RequestBody StudentDto studentDto) {
+    public void add2(@ModelAttribute StudentDto studentDto) {
         studentService.addStudent(studentDto);
     }
 }

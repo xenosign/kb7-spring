@@ -1,18 +1,21 @@
-INSERT INTO classroom (room_name) VALUES ('KB7-26');
-INSERT INTO classroom (room_name) VALUES ('KB7-27');
-INSERT INTO classroom (room_name) VALUES ('KB7-28');
+INSERT INTO classroom (room_name) VALUES ('26-1');
+INSERT INTO classroom (room_name) VALUES ('26-2');
+INSERT INTO classroom (room_name) VALUES ('26-3');
 
 INSERT INTO student (name, role, specialty, status, classroom_id)
-VALUES ('홍길동', 'STUDENT', 'JAVA', 'ACTIVE', 1);
+VALUES ('최보윤', '교육생', '음악퀴즈', '?', 1);
 
 INSERT INTO student (name, role, specialty, status, classroom_id)
-VALUES ('이순신', 'STUDENT', 'SPRING', 'ACTIVE', 1);
+VALUES ('김건우', '교육생', '수현님자리차지', '축구보는중', 1);
 
 INSERT INTO student (name, role, specialty, status, classroom_id)
-VALUES ('강감찬', 'STUDENT', 'DB', 'ACTIVE', 2);
+VALUES ('김민철', '정처기특별강사', '정처기', '강의준비중', 2);
 
 INSERT INTO student (name, role, specialty, status, classroom_id)
-VALUES ('유관순', 'STUDENT', 'WEB', 'ACTIVE', 2);
+VALUES ('이아영', '교육생', '마니또운좋음', '오후에왔음', 2);
 
 INSERT INTO student (name, role, specialty, status, classroom_id)
-VALUES ('김구', 'STUDENT', 'JAVA', 'INACTIVE', 3);
+VALUES ('김기선', '교육생', '마니또티남', '푸쉬데이?', 3);
+
+INSERT INTO student (name, role, specialty, status, classroom_id)
+VALUES ('이지은', '교육생', '열심히함', '?', 3);
