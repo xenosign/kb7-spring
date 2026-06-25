@@ -70,7 +70,7 @@ public class StudentApiControllerV2 {
 //    }
 
     @PostMapping("/add")
-    public void add2(@ModelAttribute StudentDto studentDto) {
+    public void add2(@RequestBody StudentDto studentDto) {
         studentService.addStudent(studentDto);
     }
 }
