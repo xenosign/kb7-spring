@@ -28,7 +28,7 @@ public class JpaProblemController {
      */
     @GetMapping("/1")
     public String step1() {
-        log.info("11111111111111111111");
+        log.info("1. Student만 조회");
         Student student = studentRepository.findById(1L).orElse(null);
         if (student == null) return "Student Not Found";
         log.info("학생 이름 : {}", student.getName());
@@ -41,7 +41,7 @@ public class JpaProblemController {
     @Transactional
     @GetMapping("/2")
     public String step2() {
-        log.info("22222222222222222222");
+        log.info("2. 객체 그래프 탐색 + Lazy Loading");
         Student student = studentRepository.findById(1L).orElse(null);
         if (student == null) return "Student Not Found";
         log.info("학생 조회 완료");
@@ -56,7 +56,7 @@ public class JpaProblemController {
     @Transactional
     @GetMapping("/3")
     public String step3() {
-        log.info("33333333333333333333");
+        log.info("3. N+1 문제");
         List<Student> students = studentRepository.findAll();
         for (Student student : students) {
             log.info("{} -> {}", student.getName(), student.getClassroom().getRoomName());
@@ -70,7 +70,7 @@ public class JpaProblemController {
     @Transactional
     @GetMapping("/4")
     public String step4() {
-        log.info("44444444444444444444");
+        log.info("4. Fetch Join으로 N+1 해결");
         List<Student> students = studentRepository.findAllFetchJoin();
         for (Student student : students) {
             log.info("{} -> {}", student.getName(), student.getClassroom().getRoomName());
@@ -79,42 +79,12 @@ public class JpaProblemController {
     }
 
     /**
-     * 5. 영속성 컨텍스트(1차 캐시) 확인
+     * 5. OneToMany Lazy Loading
      */
     @Transactional
     @GetMapping("/5")
     public String step5() {
-        log.info("55555555555555555555");
-        Student student = studentRepository.findById(1L).orElse(null);
-        if (student == null) return "Student Not Found";
-        log.info("첫 번째 접근");
-        log.info(student.getClassroom().getRoomName());
-        log.info("----------------");
-        log.info("두 번째 접근");
-        log.info(student.getClassroom().getRoomName());
-        return "OK";
-    }
-
-    /**
-     * 6. LazyInitializationException 확인
-     */
-//    "트랜잭션이 없으면 Session이 Repository 호출 직후 닫히기 때문에, 그 이후에 Lazy 객체를 건드리면 터진다"
-    @GetMapping("/6")
-    public String step6() {
-        log.info("66666666666666666666");
-        Student student = studentRepository.findById(1L).orElse(null);
-        if (student == null) return "Student Not Found";
-        log.info(student.getClassroom().getRoomName());
-        return "OK";
-    }
-
-    /**
-     * 7. OneToMany Lazy Loading
-     */
-    @Transactional
-    @GetMapping("/7")
-    public String step7() {
-        log.info("77777777777777777777");
+        log.info("5. OneToMany Lazy Loading");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         if (classroom == null) return "Classroom Not Found";
         log.info("반 조회 완료");
@@ -126,12 +96,12 @@ public class JpaProblemController {
     }
 
     /**
-     * 8. OneToMany N+1 문제
+     * 6. OneToMany N+1 문제
      */
     @Transactional
-    @GetMapping("/8")
-    public String step8() {
-        log.info("88888888888888888888");
+    @GetMapping("/6")
+    public String step6() {
+        log.info("6. OneToMany N+1 문제");
         List<Classroom> classrooms = classroomRepository.findAll();
         for (Classroom classroom : classrooms) {
             log.info("===== {} =====", classroom.getRoomName());
@@ -143,12 +113,12 @@ public class JpaProblemController {
     }
 
     /**
-     * 9. Fetch Join으로 OneToMany N+1 해결
+     * 7. Fetch Join으로 OneToMany N+1 해결
      */
     @Transactional
-    @GetMapping("/9")
-    public String step9() {
-        log.info("99999999999999999999");
+    @GetMapping("/7")
+    public String step7() {
+        log.info("7. Fetch Join으로 OneToMany N+1 해결");
         List<Classroom> classrooms = classroomRepository.findAllFetchJoin();
         for (Classroom classroom : classrooms) {
             log.info("===== {} =====", classroom.getRoomName());
@@ -160,12 +130,45 @@ public class JpaProblemController {
     }
 
     /**
-     * 10. 양방향 객체 그래프 탐색 (굳이 굳이)
+     * 8. 영속성 컨텍스트(1차 캐시) 확인
+     */
+    @Transactional
+    @GetMapping("/8")
+    public String step8() {
+        log.info("8. 영속성 컨텍스트(1차 캐시) 확인");
+        Student student = studentRepository.findById(1L).orElse(null);
+        if (student == null) return "Student Not Found";
+        log.info("첫 번째 접근");
+        log.info(student.getClassroom().getRoomName());
+        log.info("----------------");
+        log.info("두 번째 접근");
+        log.info(student.getClassroom().getRoomName());
+        return "OK";
+    }
+
+    /**
+     * 9. 트랜잭션 밖에서 Lazy Loading - LazyInitializationException
+     */
+    @GetMapping("/9")
+    public String step9() {
+        log.info("9. 트랜잭션 밖에서 Lazy Loading - LazyInitializationException");
+        Student student = studentRepository.findById(1L).orElse(null);
+        if (student == null) return "Student Not Found";
+        log.info("첫 번째 접근");
+        log.info(student.getClassroom().getRoomName());
+        log.info("----------------");
+        log.info("두 번째 접근");
+        log.info(student.getClassroom().getRoomName());
+        return "OK";
+    }
+
+    /**
+     * 10. 양방향 객체 그래프 탐색
      */
     @Transactional
     @GetMapping("/10")
     public String step10() {
-        log.info("10 10 10 10 10 10 10 10 10 10");
+        log.info("10. 양방향 객체 그래프 탐색");
         Student student = studentRepository.findById(1L).orElse(null);
         if (student == null) return "Student Not Found";
         Classroom classroom = student.getClassroom();
@@ -181,15 +184,15 @@ public class JpaProblemController {
      */
     @GetMapping("/11")
     public Classroom step11() {
-        log.info("11 11 11 11 11 11 11 11 11 11");
+        log.info("11. JSON 무한 순환 확인");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         return classroom;
     }
 
     @Transactional
     @GetMapping("/11dto")
-    public ClassroomDto step111() {
-        log.info("11dto 11dto 11dto 11dto 11dto 11dto 11dto");
+    public ClassroomDto step11dto() {
+        log.info("11dto. DTO로 JSON 무한 순환 해결");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         if (classroom == null) return null;
         return ClassroomDto.from(classroom);
@@ -201,14 +204,10 @@ public class JpaProblemController {
     @Transactional
     @GetMapping("/12")
     public String step12() {
-        log.info("12 12 12 12 12 12 12 12 12 12");
+        log.info("12. @Data 문제 - toString() 무한순환 (StackOverflowError)");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         if (classroom == null) return "Classroom Not Found";
-
-        // @Data가 생성한 toString()이 양방향 참조를 타고 무한순환
-        // Classroom.toString() -> Student.toString() -> Classroom.toString() -> ...
-        log.info(classroom.toString()); // 💥 StackOverflowError
-
+        log.info(classroom.toString());
         return "OK";
     }
 
@@ -218,30 +217,22 @@ public class JpaProblemController {
     @Transactional
     @GetMapping("/13")
     public String step13() {
-        log.info("13 13 13 13 13 13 13 13 13 13");
+        log.info("13. @Data 문제 - 의도치 않은 Dirty Checking");
         Student student = studentRepository.findById(1L).orElse(null);
         if (student == null) return "Student Not Found";
-
         log.info("변경 전 : {}", student.getName());
-
-        // setter가 열려있어서 트랜잭션 안에서 필드 변경 시
-        // 별도 save() 없이 자동으로 UPDATE 쿼리 발생
         student.setName("이름바뀜");
-
         log.info("변경 후 : {}", student.getName());
-        // save() 호출 없음에도 UPDATE 나감 💥
-
         return "OK";
     }
 
     /**
      * 14. 연관관계의 주인이 아닌 쪽에서만 관계 설정
      */
-    // 주인이 아닌쪽에서 하면 null 이 들어가서 잘못된 데이터 저장
     @Transactional
     @GetMapping("/14")
     public String step14() {
-        log.info("14 14 14 14 14 14 14 14 14 14");
+        log.info("14. 연관관계의 주인이 아닌 쪽에서 관계 설정 - classroom_id null 저장");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         if (classroom == null) return "Classroom Not Found";
         Student student = new Student();
@@ -254,11 +245,10 @@ public class JpaProblemController {
     /**
      * 15. 연관관계의 주인(ManyToOne)에서 관계 설정
      */
-// 주인 쪽에서 하면 올바른 classroom id 삽입
     @Transactional
     @GetMapping("/15")
     public String step15() {
-        log.info("15 15 15 15 15 15 15 15 15 15");
+        log.info("15. 연관관계의 주인(ManyToOne)에서 관계 설정 - classroom_id 정상 저장");
         Classroom classroom = classroomRepository.findById(1L).orElse(null);
         if (classroom == null) return "Classroom Not Found";
         Student student = new Student();
