@@ -54,21 +54,6 @@ public class StudentApiControllerV2 {
         return studentService.searchStudentList(searchDto);
     }
 
-
-//    @PostMapping("/add")
-//    public void add(@RequestParam String name,
-//                      @RequestParam String role,
-//                      @RequestParam(required = false) String specialty,
-//                      @RequestParam(required = false) String status) {
-//        log.info("====================> StudentController POST /add : name={}, role={}", name, role);
-//        StudentDto studentDto = new StudentDto();
-//        studentDto.setName(name);
-//        studentDto.setRole(role);
-//        studentDto.setSpecialty(specialty);
-//        studentDto.setStatus(status);
-//        studentService.addStudent(studentDto);
-//    }
-
     @PostMapping("/add")
     public void add2(@RequestBody StudentDto studentDto) {
         studentService.addStudent(studentDto);
