@@ -18,10 +18,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {
-        "org.example.kb7spring.member.repository",
-        "org.example.kb7spring.student.repository"
-})
+@EnableJpaRepositories(basePackages = {"org.example.kb7spring"})
 @PropertySource("classpath:application.properties")
 public class JpaConfig {
 //    @Value("${jdbc.driver}")

@@ -2,15 +2,13 @@ package org.example.kb7spring.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.kb7spring.security.service.CustomUserDetailsService;
 import org.example.kb7spring.user.dto.UserJoinDto;
 import org.example.kb7spring.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -32,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody UserJoinDto dto) {
+    public String register(@ModelAttribute UserJoinDto dto) {
         userService.save(dto);
         return "redirect:/user/login";
     }
@@ -52,6 +50,4 @@ public class UserController {
     public String loginFailed() {
         return "user/login-failure";
     }
-
-
 }

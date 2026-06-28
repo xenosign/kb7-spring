@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/api/**").access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+                .antMatchers("/student/**").access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
                 .antMatchers("/**").authenticated();
 
         http.formLogin()
@@ -37,6 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/user/login")
                 .defaultSuccessUrl("/user/login-success")
                 .failureUrl("/user/login-failure");
+
+        http.logout()
+                .logoutUrl("/user/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/user/login")
+                .permitAll();
 
         http.addFilterBefore(encodingFilter(), CsrfFilter.class);
     }
