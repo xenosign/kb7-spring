@@ -14,6 +14,7 @@ ext {
     junitVersion = '5.10.2'
     lombokVersion = '1.18.30'
     springVersion = '5.3.37'
+    springSecurityVersion = '5.8.13'
 }
 
 sourceCompatibility = '1.8'
@@ -71,6 +72,20 @@ dependencies {
     implementation 'org.springframework.data:spring-data-jpa:2.7.18'
 
     implementation 'org.aspectj:aspectjweaver:1.9.21'
+
+    // Security
+    implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-config:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-core:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-taglibs:${springSecurityVersion}")
+
+    // Encryption
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 test {
