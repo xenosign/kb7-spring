@@ -34,30 +34,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .antMatchers("/user/**").permitAll()
-//                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-//                .antMatchers("/student/**").access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
-//                .antMatchers("/**").authenticated();
-//
-//        http.formLogin()
-//                .loginPage("/user/login")
-//                .loginProcessingUrl("/user/login")
-//                .defaultSuccessUrl("/user/login-success")
-//                .failureUrl("/user/login-failure");
-//
-//        http.logout()
-//                .logoutUrl("/user/logout")
-//                .invalidateHttpSession(true)
-//                .deleteCookies("JSESSIONID", "remember-me")
-//                .logoutSuccessUrl("/user/login")
-//                .permitAll();
-//
-//        http.addFilterBefore(encodingFilter(), CsrfFilter.class);
-//    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/student/**").access("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+                .antMatchers("/**").authenticated();
+
+        http.formLogin()
+                .loginPage("/user/login")
+                .loginProcessingUrl("/user/login")
+                .defaultSuccessUrl("/user/login-success")
+                .failureUrl("/user/login-failure");
+
+        http.logout()
+                .logoutUrl("/user/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/user/login")
+                .permitAll();
+
+        http.addFilterBefore(encodingFilter(), CsrfFilter.class);
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -77,32 +77,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CorsFilter(source);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and()
-                .httpBasic().disable()
-                .csrf().disable()
-                .formLogin().disable();
-
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/user/**").permitAll()
-                .antMatchers("/auth/admin").hasRole("ADMIN")
-                .antMatchers("/auth/member").hasAnyRole("ADMIN", "MEMBER")
-                .antMatchers("/auth/**").authenticated()
-                .antMatchers("/**").authenticated();
-
-        http.addFilterBefore(
-                new JwtLoginFilter(authenticationManager(), jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class
-        );
-
-        http.addFilterBefore(
-                new JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class
-        );
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .cors().and()
+//                .httpBasic().disable()
+//                .csrf().disable()
+//                .formLogin().disable();
+//
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//        http.authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers("/user/**").permitAll()
+//                .antMatchers("/auth/admin").hasRole("ADMIN")
+//                .antMatchers("/auth/member").hasAnyRole("ADMIN", "MEMBER")
+//                .antMatchers("/auth/**").authenticated()
+//                .antMatchers("/**").authenticated();
+//
+//        http.addFilterBefore(
+//                new JwtLoginFilter(authenticationManager(), jwtTokenProvider),
+//                UsernamePasswordAuthenticationFilter.class
+//        );
+//
+//        http.addFilterBefore(
+//                new JwtAuthenticationFilter(jwtTokenProvider),
+//                UsernamePasswordAuthenticationFilter.class
+//        );
+//    }
 }
