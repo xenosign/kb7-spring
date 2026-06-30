@@ -2,8 +2,7 @@ package org.example.kb7spring.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.kb7spring.security.service.CustomUserDetailsService;
-import org.example.kb7spring.user.dto.UserJoinDto;
+import org.example.kb7spring.user.dto.UserJoinRequest;
 import org.example.kb7spring.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute UserJoinDto dto) {
+    public String register(@ModelAttribute UserJoinRequest dto) {
         userService.save(dto);
         return "redirect:/user/login";
     }
