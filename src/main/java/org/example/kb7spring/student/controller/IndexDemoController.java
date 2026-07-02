@@ -30,7 +30,7 @@ public class IndexDemoController {
     private final JdbcTemplate jdbcTemplate;
 
     /** 더미 데이터 건수 (인덱스 효과를 극적으로 보기 위해 100만 건) */
-    private static final int SAMPLE_SIZE = 1_000_000;
+    private static final int SAMPLE_SIZE = 100_000;
 
     /** 실제 쿼리 반복 수행 횟수 (평균 시간 측정용) */
     private static final int BENCH_RUNS = 10;
@@ -111,12 +111,38 @@ public class IndexDemoController {
 
     /**
      * [GET] /api/index/v1/0
-     * 0. 더미 데이터 대량 생성 (인덱스 효과를 극적으로 보려면 100만 건)
-     *    - 100만 건 INSERT 는 수 분 걸릴 수 있음.
-     *    - JDBC URL 에 rewriteBatchedStatements=true 옵션을 주면 훨씬 빨라진다.
+     * 0. 더미 데이터 대량 생성 - 건별 INSERT (배치 미적용)
+     *    - 매 건마다 DB 네트워크 왕복이 발생해 매우 느리다.
+     *    - 100만 건 기준 수 분 이상 걸릴 수 있으므로 시연 시 주의.
      */
     @GetMapping("/0")
-    public Map<String, Object> seed() {
+    public Map<String, Object> seedV1() {
+        long start = System.currentTimeMillis();
+        String sql = "INSERT INTO student (name, role, specialty, status) VALUES (?, ?, ?, ?)";
+        String[] roles = {"수강생", "조교", "매니저"};
+        String[] specialties = {"백엔드", "프론트엔드", "풀스택"};
+
+        for (int i = 1; i <= SAMPLE_SIZE; i++) {
+            jdbcTemplate.update(sql,
+                    "학생" + i,
+                    roles[i % roles.length],
+                    specialties[i % specialties.length],
+                    "ACTIVE");
+        }
+
+        long elapsed = System.currentTimeMillis() - start;
+        return message("[건별 INSERT] " + SAMPLE_SIZE + "건 생성 완료 (" + elapsed + "ms)");
+    }
+
+    /**
+     * [GET] /api/index/v1/0-1
+     * 0-1. 더미 데이터 대량 생성 - 배치 INSERT (batchUpdate)
+     *      - 1000건씩 묶어 전송하므로 건별 INSERT 보다 훨씬 빠르다.
+     *      - JDBC URL 에 rewriteBatchedStatements=true 옵션까지 주면
+     *        multi-value INSERT 로 재작성되어 극적으로 빨라진다.
+     */
+    @GetMapping("/0-1")
+    public Map<String, Object> seedV2() {
         long start = System.currentTimeMillis();
         String sql = "INSERT INTO student (name, role, specialty, status) VALUES (?, ?, ?, ?)";
         String[] roles = {"수강생", "조교", "매니저"};
@@ -141,7 +167,7 @@ public class IndexDemoController {
         }
 
         long elapsed = System.currentTimeMillis() - start;
-        return message(SAMPLE_SIZE + "건 생성 완료 (" + elapsed + "ms)");
+        return message("[배치 INSERT] " + SAMPLE_SIZE + "건 생성 완료 (" + elapsed + "ms)");
     }
 
     /**
@@ -229,9 +255,11 @@ public class IndexDemoController {
         return message("3. idx_student_role_name 인덱스 삭제 완료 (초기화)");
     }
 
+    // name index 다시 적용 필요 /api/index/v1/2/index
 
     /**
      * [GET] /api/index/v1/4-1
+
      * 4-1. LIKE '%500000%' - 앞 와일드카드, 인덱스 못 탐
      *      + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (full scan 반복, 오래 걸림 주의)
      */
