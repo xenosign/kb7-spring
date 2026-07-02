@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.kb7spring.oauth.dto.KakaoUserInfoDto;
+import org.example.kb7spring.oauth.dto.KakaoUserInfo;
 import org.example.kb7spring.security.jwt.JwtTokenProvider;
 import org.example.kb7spring.user.domain.User;
 import org.example.kb7spring.user.repository.UserRepository;
@@ -31,16 +31,16 @@ public class KakaoOauthService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("0edfdf21309e5ba87a8ffadf80179b55")
+    @Value("${kakao.rest_key}")
     private String REST_API_KEY;
 
-    @Value("http://localhost:8080/oauth/kakao/callback")
+    @Value("${kakao.redirect_uri}")
     private String REDIRECT_URI;
 
 
-    public KakaoUserInfoDto processKakaoLogin(String code) {
+    public KakaoUserInfo processKakaoLogin(String code) {
         String accessToken = this.getAccessToken(code);
-        KakaoUserInfoDto userInfo = this.getUserInfo(accessToken);
+        KakaoUserInfo userInfo = this.getUserInfo(accessToken);
 
         User user = this.processKakaoUser(userInfo);
 
@@ -92,7 +92,7 @@ public class KakaoOauthService {
         }
     }
 
-    public KakaoUserInfoDto getUserInfo(String accessToken) {
+    public KakaoUserInfo getUserInfo(String accessToken) {
         String userUrl = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders headers = new HttpHeaders();
@@ -120,14 +120,14 @@ public class KakaoOauthService {
             String nickname = profile.get("nickname").asText(null);
             String profileImageUrl = profile.get("profile_image_url").asText(null);
 
-            return new KakaoUserInfoDto(kakaoId, null, nickname, profileImageUrl, null);
+            return new KakaoUserInfo(kakaoId, null, nickname, profileImageUrl, null);
         } catch (Exception e) {
             log.error("카카오 사용자 정보 요청 실패", e);
             throw new RuntimeException("카카오 사용자 정보 요청 실패");
         }
     }
 
-    public User processKakaoUser(KakaoUserInfoDto userInfo) {
+    public User processKakaoUser(KakaoUserInfo userInfo) {
         Optional<User> userOptional = userRepository.findByUsername(userInfo.getNickname());
 
         if (userOptional.isPresent()) {

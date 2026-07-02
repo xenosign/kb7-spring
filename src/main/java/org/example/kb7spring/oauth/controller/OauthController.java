@@ -2,7 +2,7 @@ package org.example.kb7spring.oauth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.kb7spring.oauth.dto.KakaoUserInfoDto;
+import org.example.kb7spring.oauth.dto.KakaoUserInfo;
 import org.example.kb7spring.oauth.service.KakaoOauthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequestMapping("/oauth")
 public class OauthController {
     private final KakaoOauthService kakaoOauthService;
-    private KakaoUserInfoDto kakaoUserInfo;
+    private KakaoUserInfo kakaoUserInfo;
 
     @GetMapping("/kakao/callback")
     public void kakaoCallback(
@@ -29,7 +29,7 @@ public class OauthController {
             HttpServletResponse response) throws IOException {
         log.info("kakaoCallback code={}, state={}", code, state);
 
-        KakaoUserInfoDto userInfo = kakaoOauthService.processKakaoLogin(code);
+        KakaoUserInfo userInfo = kakaoOauthService.processKakaoLogin(code);
         kakaoUserInfo = userInfo;
 
         Cookie cookie = new Cookie("jwt", userInfo.getToken());
@@ -44,7 +44,7 @@ public class OauthController {
     }
 
     @GetMapping("/user/me")
-    public ResponseEntity<KakaoUserInfoDto> getKakaoUserInfo() {
+    public ResponseEntity<KakaoUserInfo> getKakaoUserInfo() {
         return ResponseEntity.ok(kakaoUserInfo);
     }
 }

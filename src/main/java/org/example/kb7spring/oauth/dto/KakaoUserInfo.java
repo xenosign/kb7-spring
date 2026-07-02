@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class KakaoUserInfoDto {
+public class KakaoUserInfo {
     private Long kakaoId;
     private String email;
     private String nickname;
