@@ -69,6 +69,7 @@ WHERE id BETWEEN 100001 AND 200000;
 SELECT TIMESTAMPDIFF(MICROSECOND, @t2, NOW(6)) / 1000 AS '인덱스 10개 INSERT (ms)';
 
 --
+ANALYZE TABLE index_overhead_test;
 
 SELECT table_name,
        ROUND(data_length / 1024 / 1024, 1)  AS 'data (MB)',

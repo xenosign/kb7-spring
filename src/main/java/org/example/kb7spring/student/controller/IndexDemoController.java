@@ -7,12 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-/**
- * - 더미 데이터 10만 건 기준으로 인덱스 유무에 따른 실행 계획/성능 차이를 확인
- * - 각 단계는 EXPLAIN 실행 계획과 함께, 실제 쿼리를 BENCH_RUNS회 수행한 평균 소요 시간 확인
- * - 브라우저/Postman에서 바로 호출할 수 있도록 모든 엔드포인트를 GET 으로 통일
- * - 응답은 문자열이 아닌 JSON 구조(Map/List)로 반환
- */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -21,19 +15,16 @@ public class IndexDemoController {
 
     private final JdbcTemplate jdbcTemplate;
 
-    /** 더미 데이터 건수 (인덱스 효과를 극적으로 보기 위해 10만 건) */
+    // 더미 데이터 건수 (인덱스 효과를 극적으로 보기 위해 10만 건)
     private static final int SAMPLE_SIZE = 100_000;
 
-    /** 실제 쿼리 반복 수행 횟수 (평균 시간 측정용) */
+    // 실제 쿼리 반복 수행 횟수 (평균 시간 측정용)
     private static final int BENCH_RUNS = 10;
 
     private static final String SAMPLE_NAME = "학생50001";
     private static final String SAMPLE_ROLE = "수강생";
 
-    /**
-     * EXPLAIN 결과를 로그에 남기고, 실행 계획을 줄 단위 리스트로 반환한다.
-     * -> JSON 배열로 직렬화되어 Postman 에서 한 줄씩 깔끔하게 보인다.
-     */
+    // 결과 확인용 explain 함수
     private List<String> explain(String sql, Object... args) {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList("EXPLAIN " + sql, args);
         List<String> plan = new ArrayList<>();
@@ -46,9 +37,7 @@ public class IndexDemoController {
         return plan;
     }
 
-    /**
-     * 실제 쿼리를 BENCH_RUNS회 수행하고 평균 소요 시간을 구조화된 Map 으로 반환
-     */
+    // 쿼리를 10번 수행하고, 결과를 반환
     private Map<String, Object> benchmark(String sql, Object... args) {
         // warm-up 1회 (디스크 I/O -> 버퍼 풀 적재로 인한 첫 실행 왜곡 제거)
         jdbcTemplate.queryForList(sql, args);
@@ -72,9 +61,7 @@ public class IndexDemoController {
         return bench;
     }
 
-    /**
-     * 제목 + EXPLAIN 실행 계획 + 벤치마크 결과를 하나의 JSON 응답으로 조립한다.
-     */
+    // 수행 계획과 결과를 Map 으로 리턴
     private Map<String, Object> explainAndBench(String title, String sql, Object... args) {
         log.info(title);
         Map<String, Object> response = new LinkedHashMap<>();
@@ -185,7 +172,7 @@ public class IndexDemoController {
     /**
      * [GET] /api/index/v1/1
      * 1. 인덱스 없이 name 조회 - full scan 확인
-     *    + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (full scan 이라 100만 건 기준 상당히 느림)
+     *    + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (full scan 이라 10만 건 기준 상당히 느림)
      */
     @GetMapping("/1")
     public Map<String, Object> step1() {
@@ -221,7 +208,7 @@ public class IndexDemoController {
      *      + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (full scan 반복, 오래 걸림 주의)
      */
     @GetMapping("/3-1")
-    public Map<String, Object> step4a() {
+    public Map<String, Object> step3a() {
         return explainAndBench("3-1. LIKE '%500000%' - 앞 와일드카드, 인덱스 못 탐",
                 "SELECT * FROM student WHERE name LIKE ?", "%500000%");
     }
@@ -230,25 +217,25 @@ public class IndexDemoController {
      * [GET] /api/index/v1/3-2
      * 3-2. LIKE '학생50000%' - 뒤 와일드카드 + 높은 선택도
      *      -> type=range, key=idx_student_name 으로 인덱스 range 스캔 확인
-     *      + 실제 쿼리 수행 평균 시간 (4-1 full scan 과 극적인 차이)
+     *      + 실제 쿼리 수행 평균 시간 (3-1 full scan 과 극적인 차이)
      */
     @GetMapping("/3-2")
-    public Map<String, Object> step4b() {
+    public Map<String, Object> step3b() {
         return explainAndBench("3-2. LIKE '학생50000%' - 뒤 와일드카드 + 높은 선택도, 인덱스 range 스캔",
                 "SELECT * FROM student WHERE name LIKE ?", "학생50000%");
     }
 
     /**
      * [GET] /api/index/v1/3-3
-     * 3-3. LIKE '학생5%' - 뒤 와일드카드지만 낮은 선택도(약 1.2만 건, 전체의 12%)
+     * 3-3. LIKE '학생5%' - 뒤 와일드카드지만 낮은 선택도(약 1만 건, 전체의 10%)
      *      -> 인덱스를 "탈 수 있는" 형태인데도 옵티마이저가 type=ALL(full scan)을 선택.
-     *      이유: SELECT * 라서 매칭된 1.2만 건마다 세컨더리 인덱스 -> 테이블로
+     *      이유: SELECT * 라서 매칭된 1만 건마다 세컨더리 인덱스 -> 테이블로
      *      되돌아가는 랜덤 I/O가 필요한데, 그 비용이 테이블 순차 스캔 1회보다 비싸다고 판단.
      *      핵심 메시지: "인덱스를 탈 수 있다 != 타는 게 이득이다" (비용 기반 옵티마이저)
-     *      4-2와 나란히 비교: 와일드카드 위치는 같고, 선택도만 다르다.
+     *      3-2와 나란히 비교: 와일드카드 위치는 같고, 선택도만 다르다.
      */
     @GetMapping("/3-3")
-    public Map<String, Object> step4c() {
+    public Map<String, Object> step3c() {
         return explainAndBench("3-3. LIKE '학생5%' - 낮은 선택도, 인덱스를 버리고 full scan 선택",
                 "SELECT * FROM student WHERE name LIKE ?", "학생5%");
     }
@@ -259,16 +246,16 @@ public class IndexDemoController {
      *    + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (SELECT * 인 2번과 비교)
      */
     @GetMapping("/3-4")
-    public Map<String, Object> step5() {
+    public Map<String, Object> step3d() {
         return explainAndBench("3-4. 커버링 인덱스 - name만 SELECT",
                 "SELECT name FROM student WHERE name = ?", SAMPLE_NAME);
     }
 
     /**
-     * [GET] /api/index/v1/3/drop
-     * 3. idx_student_name 인덱스 삭제 (초기화)
+     * [GET] /api/index/v1/2/drop
+     * 2. idx_student_name 인덱스 삭제 (초기화)
      */
-    @GetMapping("/3/drop")
+    @GetMapping("/2/drop")
     public Map<String, Object> step2Drop() {
         jdbcTemplate.execute("DROP INDEX idx_student_name ON student");
         return message("3. idx_student_name 인덱스 삭제 완료 (초기화)");
@@ -290,20 +277,26 @@ public class IndexDemoController {
      *      + 실제 쿼리 BENCH_RUNS회 수행 평균 시간
      */
     @GetMapping("/4-1")
-    public Map<String, Object> step3a() {
+    public Map<String, Object> step4a() {
         return explainAndBench("4-1. WHERE role = ? AND name = ? - 복합 인덱스 활용",
                 "SELECT * FROM student WHERE role = ? AND name = ?", SAMPLE_ROLE, SAMPLE_NAME);
     }
 
+    @GetMapping("/4-2")
+    public Map<String, Object> step4b() {
+        return explainAndBench("4-2. WHERE name = ? AND role = ? - 복합 인덱스 활용을 반대로",
+                "SELECT * FROM student WHERE name = ? AND role = ?", SAMPLE_NAME, SAMPLE_ROLE);
+    }
+
     /**
-     * [GET] /api/index/v1/4-2
-     * 4-2. WHERE name = ? 단독 조회 - 왼쪽 접두 원칙 위반으로 복합 인덱스를 못 탐
+     * [GET] /api/index/v1/4-3
+     * 4-3. WHERE name = ? 단독 조회 - 왼쪽 접두 원칙 위반으로 복합 인덱스를 못 탐
      *      (idx_student_name 은 /2/drop 으로 지운 상태에서 실행해야 차이가 보임)
      *      + 실제 쿼리 BENCH_RUNS회 수행 평균 시간 (full scan 이라 4-1과 큰 차이)
      */
-    @GetMapping("/4-2")
-    public Map<String, Object> step3b() {
-        return explainAndBench("4-2. WHERE name = ? 단독 조회 - 복합 인덱스(role, name)의 왼쪽 접두 위반",
+    @GetMapping("/4-3")
+    public Map<String, Object> step4c() {
+        return explainAndBench("4-3. WHERE name = ? 단독 조회 - 복합 인덱스(role, name)의 왼쪽 접두 위반",
                 "SELECT * FROM student WHERE name = ?", SAMPLE_NAME);
     }
 
@@ -336,7 +329,7 @@ public class IndexDemoController {
      * 5. classroom_id FK 인덱스 생성
      */
     @GetMapping("/5/index")
-    public Map<String, Object> step6Create() {
+    public Map<String, Object> step5Create() {
         jdbcTemplate.execute("CREATE INDEX idx_student_classroom_id ON student(classroom_id)");
         return message("5. classroom_id FK 인덱스 생성 완료");
     }
