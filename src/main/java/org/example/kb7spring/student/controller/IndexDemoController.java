@@ -12,15 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * DB 인덱스 처리 데모.
- *
- * - 더미 데이터 100만 건 기준으로 인덱스 유무에 따른 실행 계획/성능 차이를 확인한다.
- * - 각 단계는 EXPLAIN 실행 계획과 함께, 실제 쿼리를 BENCH_RUNS회 수행한 평균 소요 시간을 같이 보여준다.
- * - 브라우저/Postman에서 바로 호출할 수 있도록 모든 엔드포인트를 GET 으로 통일했다.
- * - 응답은 문자열이 아닌 JSON 구조(Map/List)로 반환한다.
- *   -> Postman 의 Pretty 뷰에서 \n 이스케이프 없이 줄 단위로 깔끔하게 확인 가능.
- */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
