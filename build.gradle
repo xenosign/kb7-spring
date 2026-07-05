@@ -15,6 +15,7 @@ ext {
     lombokVersion = '1.18.30'
     springVersion = '5.3.37'
     springSecurityVersion = '5.8.13'
+    springBatchVersion = '4.3.8'
 }
 
 sourceCompatibility = '1.8'
@@ -86,6 +87,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Spring Batch
+    implementation("org.springframework.batch:spring-batch-core:${springBatchVersion}")
+    implementation("org.springframework.batch:spring-batch-infrastructure:${springBatchVersion}")
+    testImplementation("org.springframework.batch:spring-batch-test:${springBatchVersion}")
 }
 
 test {
