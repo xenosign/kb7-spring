@@ -15,7 +15,7 @@ public class ErrorLogConsumer {
     private final ErrorLogRepository errorLogRepository;
 
     @KafkaListener(
-            topics = "${kafka.topic.error-events}",
+            topics = "error-events",
             groupId = "error-log-group",
             containerFactory = "errorEventListenerContainerFactory"
     )

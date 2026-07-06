@@ -38,7 +38,7 @@ public class RootConfig {
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl(url);
+        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/kb7spring?rewriteBatchedStatements=true");
         config.setUsername("root");
         config.setPassword("1234");
         return new HikariDataSource(config);

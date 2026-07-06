@@ -5,11 +5,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.kb7spring.event.dto.ErrorEvent;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -25,17 +22,10 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-@PropertySource("classpath:application.properties")
 public class KafkaConfig {
 
-    @Value("${kafka.bootstrap-servers}")
-    private String bootstrapServers;
-
-    // 새 프로퍼티(${slack.webhook-url} 등)가 이 모듈에서만 필요하기 때문에 정적 빈으로 등록
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+    // application.properties 의 @Value 플레이스홀더 해석이 이 프로젝트에서 불안정하여 하드코딩한다.
+    private final String bootstrapServers = "localhost:9092";
 
     @Bean
     public ProducerFactory<String, ErrorEvent> errorEventProducerFactory() {

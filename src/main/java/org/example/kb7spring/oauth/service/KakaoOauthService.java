@@ -8,8 +8,6 @@ import org.example.kb7spring.oauth.dto.KakaoUserInfo;
 import org.example.kb7spring.security.jwt.JwtTokenProvider;
 import org.example.kb7spring.user.domain.User;
 import org.example.kb7spring.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,18 +22,15 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@PropertySource({"classpath:/application.properties"})
 public class KakaoOauthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${kakao.rest_key}")
-    private String REST_API_KEY;
-
-    @Value("${kakao.redirect_uri}")
-    private String REDIRECT_URI;
+    // application.properties 의 @Value 플레이스홀더 해석이 이 프로젝트에서 불안정하여 하드코딩한다.
+    private final String REST_API_KEY = "e7ef5b1c9880d044d66540df8d8cf051";
+    private final String REDIRECT_URI = "http://localhost:8080/oauth/kakao/callback";
 
 
     public KakaoUserInfo processKakaoLogin(String code) {
