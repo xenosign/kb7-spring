@@ -23,7 +23,7 @@ import javax.sql.DataSource;
                 classes = Controller.class
         )
 )
-@Import(JpaConfig.class)
+@Import({JpaConfig.class, RedisConfig.class, KafkaConfig.class})
 @EnableAspectJAutoProxy
 public class RootConfig {
     @Value("${jdbc.driver}") String driver;

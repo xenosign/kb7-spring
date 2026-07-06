@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +22,11 @@ public interface StudentRepositoryV2 extends JpaRepository<Student, Long> {
     <S extends Student> S save(S entity);
 
     List<Student> findByNameOrRole(String name, String role);
+
+    long countByClassroomId(Long classroomId);
+
+    @Transactional
+    void deleteByClassroomId(Long classroomId);
 
     @Query("SELECT s FROM Student s " +
             "WHERE (:name IS NULL OR s.name = :name) " +

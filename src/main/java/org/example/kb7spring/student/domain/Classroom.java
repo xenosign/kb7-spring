@@ -22,6 +22,17 @@ public class Classroom {
     @Column(name = "room_name", nullable = false)
     private String roomName;
 
+    @Column(nullable = false, columnDefinition = "int default 30")
+    private int capacity;
+
+    // 낙관적 락(@Version) 충돌을 유발할 대상 - 등록 인원 카운터
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int studentCount;
+
+    @Version
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private Long version;
+
     @JsonIgnore
     @OneToMany(mappedBy = "classroom")
     private List<Student> students = new ArrayList<>();

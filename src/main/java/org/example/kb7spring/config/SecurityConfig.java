@@ -89,13 +89,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/api/index/**").permitAll()
-                .antMatchers("/auth/admin").hasRole("ADMIN")
-                .antMatchers("/auth/member").hasAnyRole("ADMIN", "MEMBER")
-                .antMatchers("/auth/**").authenticated()
-                .antMatchers("/**").authenticated();
+                .antMatchers("/api/index/**").permitAll();
+//                .antMatchers("/auth/admin").hasRole("ADMIN")
+//                .antMatchers("/auth/member").hasAnyRole("ADMIN", "MEMBER")
+//                .antMatchers("/auth/**").authenticated()
+//                .antMatchers("/**").authenticated();
 
         http.addFilterBefore(
                 new JwtLoginFilter(authenticationManager(), jwtTokenProvider),

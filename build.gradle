@@ -92,6 +92,13 @@ dependencies {
     implementation("org.springframework.batch:spring-batch-core:${springBatchVersion}")
     implementation("org.springframework.batch:spring-batch-infrastructure:${springBatchVersion}")
     testImplementation("org.springframework.batch:spring-batch-test:${springBatchVersion}")
+
+    // Redis
+    implementation 'org.springframework.data:spring-data-redis:2.7.18'
+    implementation 'io.lettuce:lettuce-core:6.1.10.RELEASE'
+
+    // Kafka
+    implementation 'org.springframework.kafka:spring-kafka:2.8.11'
 }
 
 test {
