@@ -109,7 +109,7 @@ public class StudentServiceV4 {
     // 정원 확인 후 등록 - 확인과 등록 사이에 다른 스레드가 끼어들 수 있음 (race condition)
     private boolean tryEnroll(Long classroomId) {
         long currentCount = studentRepository.countByClassroomId(classroomId);
-        Classroom classroom = classroomRepository.findById(classroomId).orElseThrow();
+        Classroom classroom = classroomRepository.findById(classroomId).orElseThrow((() -> new IllegalArgumentException("존재하지 않는 반입니다: " + classroomId)));
         if (currentCount >= classroom.getCapacity()) {
             return false;
         }
