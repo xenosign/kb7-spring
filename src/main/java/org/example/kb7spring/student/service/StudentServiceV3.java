@@ -56,7 +56,6 @@ public class StudentServiceV3 {
     }
 
     // 페이지네이션 + 1페이지 Redis 캐싱
-    @SuppressWarnings("unchecked")
     public PageResponseDto<StudentDto> getStudentListCached(int page, int size) {
         boolean isFirstPage = (page == 0);
 

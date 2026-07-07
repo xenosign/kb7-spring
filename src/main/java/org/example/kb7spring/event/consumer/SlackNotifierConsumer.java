@@ -2,6 +2,7 @@ package org.example.kb7spring.event.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.kb7spring.event.dto.ErrorEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +18,8 @@ import java.util.Map;
 public class SlackNotifierConsumer {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String webhookUrl = "";
+    @Value("${slack.webhook-url}")
+    private String webhookUrl;
 
     @KafkaListener(
             topics = "error-events",

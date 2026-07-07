@@ -53,7 +53,7 @@ public class StudentApiControllerV4 {
     }
 
     // 4. Redis 분산 락 적용 (마지막에 다룰 전략)
-    @GetMapping("/classroom/{classroomId}/redis-lock")
+    @GetMapping("/classroom/{classroomId}/redis")
     public ResponseEntity<Map<String, Object>> enrollRaceWithLock(
             @PathVariable Long classroomId,
             @RequestParam(defaultValue = "50") int requestCount,

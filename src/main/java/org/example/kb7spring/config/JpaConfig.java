@@ -21,30 +21,30 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = {"org.example.kb7spring"})
 @PropertySource("classpath:application.properties")
 public class JpaConfig {
-//    @Value("${jdbc.driver}")
-//    private String driver;
-//    @Value("${jdbc.url}")
-//    private String url;
-//    @Value("${jdbc.username}")
-//    private String username;
-//    @Value("${jdbc.password}")
-//    private String password;
-//    @Value("${hibernate.dialect}")
-//    private String dialect;
-//    @Value("${hibernate.hbm2ddl.auto}")
-//    private String ddlAuto;
-//    @Value("${hibernate.show_sql}")
-//    private boolean showSql;
-//    @Value("${hibernate.format_sql}")
-//    private boolean formatSql;
+    @Value("${jdbc.driver}")
+    private String driver;
+    @Value("${jdbc.url}")
+    private String url;
+    @Value("${jdbc.username}")
+    private String username;
+    @Value("${jdbc.password}")
+    private String password;
+    @Value("${hibernate.dialect}")
+    private String dialect;
+    @Value("${hibernate.hbm2ddl.auto}")
+    private String ddlAuto;
+    @Value("${hibernate.show_sql}")
+    private boolean showSql;
+    @Value("${hibernate.format_sql}")
+    private boolean formatSql;
 
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/kb7spring");
-        config.setUsername("root");
-        config.setPassword("1234");
+        config.setDriverClassName(driver);
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
         return new HikariDataSource(config);
     }
 
@@ -59,10 +59,10 @@ public class JpaConfig {
         emf.setJpaVendorAdapter(adapter);
 
         Properties props = new Properties();
-        props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-        props.setProperty("hibernate.hbm2ddl.auto", "update");
-        props.setProperty("hibernate.show_sql", String.valueOf("true"));
-        props.setProperty("hibernate.format_sql", String.valueOf("true"));
+        props.setProperty("hibernate.dialect", dialect);
+        props.setProperty("hibernate.hbm2ddl.auto", ddlAuto);
+        props.setProperty("hibernate.show_sql", String.valueOf(showSql));
+        props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
         emf.setJpaProperties(props);
 
         return emf;

@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.kb7spring.event.dto.ErrorEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -24,8 +25,11 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfig {
 
-    // application.properties 의 @Value 플레이스홀더 해석이 이 프로젝트에서 불안정하여 하드코딩한다.
-    private final String bootstrapServers = "localhost:9092";
+
+    @Value("${kafka.bootstrap-servers}")
+    private String bootstrapServers;
+
+//    private final String bootstrapServers = "localhost:9092";
 
     @Bean
     public ProducerFactory<String, ErrorEvent> errorEventProducerFactory() {
