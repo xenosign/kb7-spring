@@ -2,7 +2,6 @@ package org.example.kb7spring.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -21,22 +20,14 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = {"org.example.kb7spring"})
 @PropertySource("classpath:application.properties")
 public class JpaConfig {
-    @Value("${jdbc.driver}")
-    private String driver;
-    @Value("${jdbc.url}")
-    private String url;
-    @Value("${jdbc.username}")
-    private String username;
-    @Value("${jdbc.password}")
-    private String password;
-    @Value("${hibernate.dialect}")
-    private String dialect;
-    @Value("${hibernate.hbm2ddl.auto}")
-    private String ddlAuto;
-    @Value("${hibernate.show_sql}")
-    private boolean showSql;
-    @Value("${hibernate.format_sql}")
-    private boolean formatSql;
+    private String driver = "com.mysql.cj.jdbc.Driver";
+    private String url = "jdbc:mysql://127.0.0.1:3306/kb7spring?rewriteBatchedStatements=true";
+    private String username = "root";
+    private String password = "1234";
+    private String dialect = "org.hibernate.dialect.MySQL8Dialect";
+    private String ddlAuto = "update";
+    private boolean showSql = true;
+    private boolean formatSql = true;
 
     @Bean
     public DataSource dataSource() {

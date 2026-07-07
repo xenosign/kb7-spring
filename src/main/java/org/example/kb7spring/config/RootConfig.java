@@ -6,10 +6,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
 import javax.sql.DataSource;
@@ -23,13 +24,15 @@ import javax.sql.DataSource;
                 classes = Controller.class
         )
 )
-@Import({JpaConfig.class, RedisConfig.class, KafkaConfig.class})
+@Import({JpaConfig.class, RedisConfig.class, KafkaConfig.class, BatchConfig.class})
 @EnableAspectJAutoProxy
+@EnableScheduling
+@PropertySource("classpath:application.properties")
 public class RootConfig {
-    @Value("${jdbc.driver}") String driver;
-    @Value("${jdbc.url}") String url;
-    @Value("${jdbc.username}") String username;
-    @Value("${jdbc.password}") String password;
+    String driver = "com.mysql.cj.jdbc.Driver";
+    String url = "jdbc:mysql://127.0.0.1:3306/kb7spring?rewriteBatchedStatements=true";
+    String username = "root";
+    String password = "1234";
 
     @Autowired
     ApplicationContext applicationContext;
@@ -57,5 +60,10 @@ public class RootConfig {
                 applicationContext.getResource("classpath:/mybatis-config.xml"));
         sqlSessionFactory.setDataSource(dataSource());
         return (SqlSessionFactory) sqlSessionFactory.getObject();
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }

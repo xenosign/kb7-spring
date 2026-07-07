@@ -37,4 +37,11 @@ public interface StudentRepositoryV2 extends JpaRepository<Student, Long> {
         "from Student s " +
         "join fetch s.classroom")
     List<Student> findAllFetchJoin();
+
+    // 반 정합성 청크 배치용 - classroom 마다 개별 count 쿼리(N+1)를 날리는 대신
+    // 전체 student 를 classroom_id 로 GROUP BY 해서 한 번의 쿼리로 집계한다.
+    @Query("select s.classroom.id, count(s) " +
+            "from Student s " +
+            "group by s.classroom.id")
+    List<Object[]> countGroupByClassroomId();
 }

@@ -1,7 +1,7 @@
 package org.example.kb7spring.event.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.kb7spring.event.dto.ErrorEvent;
+import org.example.kb7spring.event.dto.ClassroomIntegrityEvent;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,29 +11,37 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class SlackNotifierConsumer {
+public class ClassroomIntegritySlackNotifier {
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String webhookUrl = "";
 
     @KafkaListener(
-            topics = "error-events",
-            groupId = "error-slack-group",
-            containerFactory = "errorEventListenerContainerFactory"
+            topics = "classroom-integrity-events",
+            groupId = "classroom-integrity-slack-group",
+            containerFactory = "classroomIntegrityEventListenerContainerFactory"
     )
-    public void consume(ErrorEvent event) {
+    public void consume(ClassroomIntegrityEvent event) {
         if (webhookUrl == null || webhookUrl.trim().isEmpty()) {
             log.warn("slack.webhook-url 미설정 - Slack 알림을 건너뜁니다");
             return;
         }
 
         try {
+            String violationLines = event.getViolations().stream()
+                    .map(v -> String.format(
+                            "  - `%s`(id=%d): 정원 %d명 / 실제 %d명 (초과 %d명)",
+                            v.getRoomName(), v.getClassroomId(), v.getCapacity(), v.getActualCount(), v.getExceededBy()
+                    ))
+                    .collect(Collectors.joining("\n"));
+
             String text = String.format(
-                    "*[서버 에러 발생]*\n- 위치: `%s`\n- 예외: `%s`\n- 메시지: %s\n- 시각: %s",
-                    event.getSource(), event.getExceptionType(), event.getMessage(), event.getOccurredAt()
+                    "*[반 정원 정합성 위반 발견]*\n- 점검 시각: %s\n- 전체 점검 반 수: %d\n- 위반 반 수: %d\n%s",
+                    event.getCheckedAt(), event.getTotalClassroomsChecked(), event.getViolatedClassroomCount(), violationLines
             );
 
             HttpHeaders headers = new HttpHeaders();

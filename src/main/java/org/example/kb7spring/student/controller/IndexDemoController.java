@@ -120,6 +120,86 @@ public class IndexDemoController {
     }
 
     /**
+     * [GET] /api/index/v1/0/{classroomCount}/{capacity}
+     * 0. 반 정원 정합성 점검(ClassroomIntegrityScheduler) 테스트용 더미 데이터 생성
+     *    - classroom 을 capacity 로 명시 재시딩하고, 반마다 정확히 capacity 만큼만 student 를 채운다.
+     *    - 시딩 직후에는 위반이 0건이며, 정원 초과는 아래처럼 DB 를 직접 조작해서 만든다.
+     *      INSERT INTO student (name, role, specialty, status, classroom_id) VALUES ('침입자', '수강생', '백엔드', 'ACTIVE', 1);
+     */
+    @GetMapping("/0/{classroomCount}/{capacity}")
+    public Map<String, Object> seedForIntegrityCheck(@PathVariable int classroomCount, @PathVariable int capacity) {
+        long start = System.currentTimeMillis();
+
+        // 다른 인덱스 데모 스텝들이 만들어둔 인덱스(idx_student_name 등)가 남아있으면
+        // 배치 성능 비교가 왜곡되므로, DELETE 로 비우는 대신 테이블 자체를 지우고
+        // 엔티티(Classroom/Student)와 동일한 스키마로 매번 새로 만든다.
+        // FK 때문에 자식(student)을 먼저 지우고 부모(classroom)를 먼저 만든다.
+        jdbcTemplate.execute("DROP TABLE IF EXISTS student");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS classroom");
+
+        jdbcTemplate.execute(
+                "CREATE TABLE classroom (" +
+                        "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                        "room_name VARCHAR(255) NOT NULL, " +
+                        "capacity INT NOT NULL DEFAULT 30, " +
+                        "studentCount INT NOT NULL DEFAULT 0, " +
+                        "version BIGINT NOT NULL DEFAULT 0, " +
+                        "PRIMARY KEY (id)" +
+                        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+        jdbcTemplate.execute(
+                "CREATE TABLE student (" +
+                        "id BIGINT NOT NULL AUTO_INCREMENT, " +
+                        "name VARCHAR(255) NOT NULL, " +
+                        "role VARCHAR(255), " +
+                        "specialty VARCHAR(255), " +
+                        "status VARCHAR(255), " +
+                        "classroom_id BIGINT, " +
+                        "PRIMARY KEY (id), " +
+                        "CONSTRAINT fk_student_classroom FOREIGN KEY (classroom_id) REFERENCES classroom (id)" +
+                        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+
+        List<Object[]> classroomBatch = new ArrayList<>(classroomCount);
+        for (int i = 1; i <= classroomCount; i++) {
+            classroomBatch.add(new Object[]{"강의실" + i, capacity});
+        }
+        jdbcTemplate.batchUpdate("INSERT INTO classroom (room_name, capacity) VALUES (?, ?)", classroomBatch);
+
+        // 반마다 정확히 capacity 명씩만 채워서, 시딩 직후에는 위반이 없는 상태로 만든다.
+        String sql = "INSERT INTO student (name, role, specialty, status, classroom_id) VALUES (?, ?, ?, ?, ?)";
+        String[] roles = {"수강생", "조교", "매니저"};
+        String[] specialties = {"백엔드", "프론트엔드", "풀스택"};
+
+        int batchSize = 1000;
+        List<Object[]> studentBatch = new ArrayList<>(batchSize);
+        int studentSeq = 1;
+        for (int classroomId = 1; classroomId <= classroomCount; classroomId++) {
+            for (int j = 0; j < capacity; j++) {
+                studentBatch.add(new Object[]{
+                        "학생" + studentSeq,
+                        roles[studentSeq % roles.length],
+                        specialties[studentSeq % specialties.length],
+                        "ACTIVE",
+                        classroomId
+                });
+                studentSeq++;
+                if (studentBatch.size() == batchSize) {
+                    jdbcTemplate.batchUpdate(sql, studentBatch);
+                    studentBatch.clear();
+                }
+            }
+        }
+        if (!studentBatch.isEmpty()) {
+            jdbcTemplate.batchUpdate(sql, studentBatch);
+        }
+
+        long elapsed = System.currentTimeMillis() - start;
+        return message("[정합성 점검 테스트용 시딩] classroom " + classroomCount + "개(capacity=" + capacity
+                + ") + student 반당 정확히 " + capacity + "명(총 " + (studentSeq - 1) + "건) 생성 완료, 위반 0건 (" + elapsed + "ms)");
+    }
+
+    /**
      * [GET] /api/index/v1/0-1/{classroomCount}
      * 0-1. 더미 데이터 대량 생성 - 배치 INSERT (batchUpdate)
      *      - classroom 먼저 재시딩 후, 그 범위 내에서 classroom_id 랜덤 배정
