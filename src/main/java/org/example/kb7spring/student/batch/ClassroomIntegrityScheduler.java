@@ -17,9 +17,9 @@ public class ClassroomIntegrityScheduler {
     private final JobLauncher jobLauncher;
     private final Job classroomIntegrityCheckChunkJob;
 
-    // 매일 새벽 3시에 반 정원 정합성 점검 배치를 실행한다.
+    // 매일 새벽 0시에 반 정원 정합성 점검 배치를 실행한다.
     // classroom/student 가 계속 늘어날 걸 감안해 페이징+청크 기반 Job을 사용한다.
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 1 */10 *")
     public void runClassroomIntegrityCheck() {
         try {
             // JobParameters 가 이전 실행과 완전히 같으면 Spring Batch 가 재실행을 거부하므로

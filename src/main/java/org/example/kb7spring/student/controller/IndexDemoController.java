@@ -162,9 +162,9 @@ public class IndexDemoController {
 
         List<Object[]> classroomBatch = new ArrayList<>(classroomCount);
         for (int i = 1; i <= classroomCount; i++) {
-            classroomBatch.add(new Object[]{"강의실" + i, capacity});
+            classroomBatch.add(new Object[]{"강의실" + i, capacity, capacity});
         }
-        jdbcTemplate.batchUpdate("INSERT INTO classroom (room_name, capacity) VALUES (?, ?)", classroomBatch);
+        jdbcTemplate.batchUpdate("INSERT INTO classroom (room_name, capacity, studentCount) VALUES (?, ?, ?)", classroomBatch);
 
         // 반마다 정확히 capacity 명씩만 채워서, 시딩 직후에는 위반이 없는 상태로 만든다.
         String sql = "INSERT INTO student (name, role, specialty, status, classroom_id) VALUES (?, ?, ?, ?, ?)";

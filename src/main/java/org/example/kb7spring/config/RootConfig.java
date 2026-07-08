@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -26,13 +27,17 @@ import javax.sql.DataSource;
 )
 @Import({JpaConfig.class, RedisConfig.class, KafkaConfig.class, BatchConfig.class})
 @EnableAspectJAutoProxy
-@EnableScheduling
 @PropertySource("classpath:application.properties")
+@EnableScheduling
 public class RootConfig {
-    String driver = "com.mysql.cj.jdbc.Driver";
-    String url = "jdbc:mysql://127.0.0.1:3306/kb7spring?rewriteBatchedStatements=true";
-    String username = "root";
-    String password = "1234";
+    @Value("${jdbc.driver}")
+    String driver;
+    @Value("${jdbc.url}")
+    String url;
+    @Value("${jdbc.username}")
+    String username;
+    @Value("${jdbc.password}")
+    String password;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -40,10 +45,10 @@ public class RootConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/kb7spring?rewriteBatchedStatements=true");
-        config.setUsername("root");
-        config.setPassword("1234");
+        config.setDriverClassName(driver);
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
         return new HikariDataSource(config);
     }
 

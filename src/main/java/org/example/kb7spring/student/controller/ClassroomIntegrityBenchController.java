@@ -6,6 +6,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,10 +56,15 @@ public class ClassroomIntegrityBenchController {
         long elapsed = System.currentTimeMillis() - start;
         log.info("[{}] Job 실행 완료 - status={}, elapsed={}ms", label, execution.getStatus(), elapsed);
 
+        ExecutionContext context = execution.getExecutionContext();
+
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("label", label);
         response.put("status", execution.getStatus().toString());
         response.put("elapsedMs", elapsed);
+        response.put("totalClassroomsChecked", context.get("totalClassroomsChecked"));
+        response.put("violatedClassroomCount", context.get("violatedClassroomCount"));
+        response.put("violations", context.get("violations"));
         return response;
     }
 }

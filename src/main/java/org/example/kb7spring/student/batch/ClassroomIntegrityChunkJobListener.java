@@ -7,6 +7,7 @@ import org.example.kb7spring.event.service.ClassroomIntegrityEventPublisher;
 import org.example.kb7spring.student.repository.ClassroomRepository;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,6 +38,12 @@ public class ClassroomIntegrityChunkJobListener implements JobExecutionListener 
                     ClassroomIntegrityEvent.of((int) totalClassrooms, violations)
             );
         }
+
+        // 점검 결과를 JobExecutionContext 에 담아 컨트롤러가 응답으로 그대로 돌려줄 수 있게 한다.
+        ExecutionContext jobContext = jobExecution.getExecutionContext();
+        jobContext.put("totalClassroomsChecked", (int) totalClassrooms);
+        jobContext.put("violatedClassroomCount", violations.size());
+        jobContext.put("violations", violations);
 
         accumulator.reset();
     }

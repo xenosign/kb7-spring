@@ -6,6 +6,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.kb7spring.event.dto.ClassroomIntegrityEvent;
 import org.example.kb7spring.event.dto.ErrorEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -26,7 +27,8 @@ import java.util.Map;
 public class KafkaConfig {
 
 
-    private String bootstrapServers = "localhost:9092";
+    @Value("${kafka.bootstrap-servers}")
+    private String bootstrapServers;
 
     @Bean
     public ProducerFactory<String, ErrorEvent> errorEventProducerFactory() {

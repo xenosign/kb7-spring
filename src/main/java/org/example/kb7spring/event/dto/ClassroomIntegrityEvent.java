@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassroomIntegrityEvent {
+public class ClassroomIntegrityEvent implements Serializable {
     private String checkedAt;
     private int totalClassroomsChecked;
     private int violatedClassroomCount;
@@ -28,7 +29,7 @@ public class ClassroomIntegrityEvent {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Violation {
+    public static class Violation implements Serializable {
         private Long classroomId;
         private String roomName;
         private int capacity;

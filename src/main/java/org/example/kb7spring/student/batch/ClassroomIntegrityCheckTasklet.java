@@ -10,6 +10,7 @@ import org.example.kb7spring.student.repository.StudentRepositoryV2;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 
@@ -57,6 +58,12 @@ public class ClassroomIntegrityCheckTasklet implements Tasklet {
                     ClassroomIntegrityEvent.of(classrooms.size(), violations)
             );
         }
+
+        // 점검 결과를 JobExecutionContext 에 담아 컨트롤러가 응답으로 그대로 돌려줄 수 있게 한다.
+        ExecutionContext jobContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+        jobContext.put("totalClassroomsChecked", classrooms.size());
+        jobContext.put("violatedClassroomCount", violations.size());
+        jobContext.put("violations", violations);
 
         return RepeatStatus.FINISHED;
     }

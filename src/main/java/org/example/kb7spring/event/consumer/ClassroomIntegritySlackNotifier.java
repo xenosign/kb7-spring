@@ -2,6 +2,7 @@ package org.example.kb7spring.event.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.kb7spring.event.dto.ClassroomIntegrityEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,8 @@ import java.util.stream.Collectors;
 public class ClassroomIntegritySlackNotifier {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private String webhookUrl = "";
+    @Value("${slack.webhook-url}")
+    private String webhookUrl;
 
     @KafkaListener(
             topics = "classroom-integrity-events",

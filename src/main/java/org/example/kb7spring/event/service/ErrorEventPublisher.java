@@ -3,6 +3,7 @@ package org.example.kb7spring.event.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.kb7spring.event.dto.ErrorEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -13,7 +14,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 public class ErrorEventPublisher {
     private final KafkaTemplate<String, ErrorEvent> errorEventKafkaTemplate;
 
-    private final String errorEventsTopic = "error-events";
+    @Value("${kafka.topic.error-events}")
+    private String errorEventsTopic;
 
     public void publish(ErrorEvent event) {
         try {
