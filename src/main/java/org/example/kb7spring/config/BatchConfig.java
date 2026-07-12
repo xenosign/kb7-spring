@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-// 배치 실행 이력(BATCH_JOB_INSTANCE 등)을 별도 DB 테이블로 관리할 필요가 없는 단순 정기 점검 작업이라
-// 인메모리(Map 기반) JobRepository 로 배치 인프라를 구성한다.
 @Configuration
 public class BatchConfig {
 
