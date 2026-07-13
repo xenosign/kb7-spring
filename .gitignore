@@ -44,3 +44,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 src/main/resources/application.properties
+
+### k6 ###
+k6/results/*
+!k6/results/.gitkeep
