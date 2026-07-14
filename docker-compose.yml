@@ -1,7 +1,20 @@
-
-version: '3.8'
-
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: kb7spring-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   kafka:
     image: apache/kafka:3.7.0
     container_name: kb7spring-kafka
@@ -10,13 +23,21 @@ services:
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # PLAINTEXT는 컨테이너 네트워크 내부(app 등) 전용, EXTERNAL은 호스트에서 접속할 때 사용
+      KAFKA_LISTENERS: PLAINTEXT://:29092,CONTROLLER://:9093,EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/29092' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   redis:
     image: redis:7
     container_name: my-redis
@@ -25,3 +46,66 @@ services:
     volumes:
       - ./redis-data:/data
     command: redis-server
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    container_name: kb7spring-app
+    ports:
+      # 호스트 8080은 Windows/Hyper-V 동적 포트 제외 범위와 겹치는 경우가 많아 18080으로 매핑
+      - "18080:8080"
+    environment:
+      JDBC_URL: "jdbc:mysql://mysql:3306/kb7spring?rewriteBatchedStatements=true&useSSL=false&allowPublicKeyRetrieval=true"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: k6-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      INFLUXDB_DB: k6
+      INFLUXDB_HTTP_FLUX_ENABLED: "true"
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: k6-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./k6/grafana/provisioning:/etc/grafana/provisioning
+      - ./k6/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - influxdb
+
+  k6:
+    image: grafana/k6:latest
+    container_name: kb7spring-k6
+    profiles: ["test"]
+    volumes:
+      - ./k6:/scripts
+    environment:
+      BASE_URL: "http://app:8080"
+    depends_on:
+      - app
+      - influxdb
+    entrypoint: ["k6"]
+
+volumes:
+  mysql-data:
+  influxdb-data:
