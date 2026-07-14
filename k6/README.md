@@ -78,3 +78,6 @@ k6 run -e BASE_URL=http://localhost:18080/<context-path> \
 
 optimistic/pessimistic/redis 전략은 `overCapacity==false`를 threshold로 강제하므로, 락이 깨지면
 k6가 non-zero exit code로 실패한다. `race`(no-lock)는 정원 초과가 재현되는 게 정상이라 threshold를 걸지 않았다.
+
+## 최종 결과 확인용 - 그라파나만 다시 띄워서 확인
+docker compose up -d influxdb grafana
