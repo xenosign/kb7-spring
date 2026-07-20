@@ -3,7 +3,9 @@ services:
     image: mysql:8.0
     container_name: kb7spring-mysql
     ports:
-      - "3306:3306"
+      # 호스트 3306은 로컬에 mysql이 떠있으면 충돌해 컨테이너가 뜨지 못하고 k6 테스트가 실패하므로 13306으로 매핑
+      # (app/k6는 docker 네트워크 내부에서 mysql:3306으로 접속하므로 영향 없음)
+      - "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "1234"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

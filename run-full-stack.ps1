@@ -71,8 +71,9 @@ try {
     $k6ExitCode = $LASTEXITCODE
 }
 finally {
-    Write-Host "[cleanup] 컨테이너 종료 중..."
-    docker compose down
+    Write-Host "[cleanup] app/mysql/kafka/redis 컨테이너 종료 중... (influxdb/grafana는 k6 결과 확인을 위해 유지)"
+    docker compose stop app mysql kafka redis
+    Write-Host "k6 결과는 Grafana(http://localhost:3000)에서 계속 확인 가능. 완전히 정리하려면 'docker compose down' 실행"
 }
 
 exit $k6ExitCode

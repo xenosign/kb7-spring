@@ -19,9 +19,9 @@ SCENARIO=scenarios/student-v4-concurrency.js CLASSROOM_ID=1 REQUEST_COUNT=50 CAP
 ```
 
 실행마다 `docker compose down -v`로 이전 mysql/kafka/redis/influxdb 데이터를 초기화한 뒤 새로 띄우고,
-테스트가 끝나면(성공/실패 무관) 컨테이너를 다시 정리한다. k6 결과는 실행 중에만 Grafana(`http://localhost:3000`)에서
-확인할 수 있으며 종료 후에는 남지 않으니, 결과를 보존하려면 스크립트 실행 중 Grafana를 열어 두거나
-`docker compose down`(cleanup) 전에 별도로 대시보드를 캡처해야 한다.
+테스트가 끝나면(성공/실패 무관) app/mysql/kafka/redis 컨테이너만 정리한다. influxdb/grafana는 계속 떠 있으므로
+k6 결과는 테스트 종료 후에도 Grafana(`http://localhost:3000`)에서 확인 가능하다. 완전히 정리하려면
+`docker compose down`(볼륨까지 지우려면 `-v` 추가)을 직접 실행한다.
 
 ## 개별 단계로 실행하기 (디버깅용)
 1. **k6 설치 확인**: `k6 version` (없다면 `winget install k6`)
